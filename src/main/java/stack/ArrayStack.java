@@ -35,7 +35,10 @@ public class ArrayStack<T> implements Stack<T> {
         stack.push("b");
         stack.push("c");
         System.out.println(stack.pop());
+        System.out.println(stack.size());
         System.out.println(stack.pop());
+        System.out.println(stack.size());
         System.out.println(stack.pop());
+        System.out.println(stack.size());
     }
 }
