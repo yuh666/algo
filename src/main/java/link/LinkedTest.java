@@ -19,6 +19,27 @@ public class LinkedTest {
         }
     }
 
+    static Node findMidNode(Node head){
+        Node fast = head,slow = head;
+        while(fast != null && fast.next != null && fast.next.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    static boolean hasCycle(Node head){
+        Node fast = head,slow = head;
+        while(fast != null && fast.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+
     static Node reverse(Node head){
         Node newHead = null;
         while(head != null){
@@ -40,9 +61,18 @@ public class LinkedTest {
 
 
     public static void main(String[] args) {
-        Node node = new Node(1, new Node(2, new Node(3, null)));
-        print(node);
-        node = reverse(node);
-        print(node);
+        Node node1 = new Node(1, null);
+        Node node2 = new Node(2, null);
+        Node node3 = new Node(3, null);
+        Node node4 = new Node(4, null);
+        node1.next = node2;
+        node2.next = node3;
+//        node3.next = node4;
+//        node3.next = node1;
+//        Node node = new Node(1, new Node(2, new Node(3, null)));
+//        print(node);
+//        node = reverse(node);
+//        print(node);
+        System.out.println(findMidNode(node1));
     }
 }
