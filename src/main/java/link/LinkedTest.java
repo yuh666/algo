@@ -59,20 +59,51 @@ public class LinkedTest {
         System.out.println("null");
     }
 
+    static Node merge(Node head1,Node head2){
+        if(head1 == null){
+            return head2;
+        }
+        if(head2 == null){
+            return head1;
+        }
+        Node dummy = new Node(-1, null);
+        Node curr = dummy;
+        while(head1 != null || head2 != null){
+            if(head1 == null){
+                curr.next = head2;
+                head2 = head2.next;
+            }else if(head2 == null){
+                curr.next = head1;
+                head1 = head1.next;
+            }else if(head1.val < head2.val){
+                curr.next = head1;
+                head1 = head1.next;
+            }else{
+                curr.next = head2;
+                head2 = head2.next;
+            }
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+
 
     public static void main(String[] args) {
         Node node1 = new Node(1, null);
         Node node2 = new Node(2, null);
         Node node3 = new Node(3, null);
         Node node4 = new Node(4, null);
+        Node node5 = new Node(5, null);
+        Node node6 = new Node(6, null);
+
         node1.next = node2;
         node2.next = node3;
-//        node3.next = node4;
-//        node3.next = node1;
-//        Node node = new Node(1, new Node(2, new Node(3, null)));
-//        print(node);
-//        node = reverse(node);
-//        print(node);
-        System.out.println(findMidNode(node1));
+
+        node4.next = node5;
+        node5.next = node6;
+
+        print(node1);
+        print(node4);
+        print(merge(node4,node1));
     }
 }
