@@ -4,6 +4,11 @@ import java.util.Arrays;
 
 public class Main {
 
+    /**
+     * unstable 1 2 1 -1 当1和-1交换时
+     * n2 n2 n2
+     * @param arr
+     */
     public static void selectSort(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             int min = arr[i];
@@ -18,6 +23,11 @@ public class Main {
         }
     }
 
+    /**
+     * stable 前面不可能冒泡到相同的后面
+     * n n2 n2 只冒泡一趟就是n
+     * @param arr
+     */
     public static void bubbleSort(int[] arr) {
         //总的比较次数
         for (int i = 0; i < arr.length - 1; i++) {
@@ -37,6 +47,11 @@ public class Main {
         }
     }
 
+    /**
+     * stable 后面的不可能插入到前面的相同的值前
+     * n n2 n2 全部有序的话就只走外面的循环就是n
+     * @param arr
+     */
     public static void insertSort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
             int i1 = arr[i];
