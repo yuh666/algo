@@ -21,7 +21,7 @@ public class Main {
     private static void merge(int[] arr, int l, int mid, int r) {
         int[] temp = new int[r - l + 1];
         System.arraycopy(arr, l, temp, 0, r - l + 1);
-        int i = 0, j = mid+1-l, iEnd = mid-l, jEnd = r-l;
+        int i = 0, j = mid + 1 - l, iEnd = mid - l, jEnd = r - l;
         while (i <= iEnd || j <= jEnd) {
             if (i > iEnd) {
                 arr[l] = temp[j];
@@ -40,9 +40,48 @@ public class Main {
         }
     }
 
+    public static void quickSort(int[] arr) {
+        _quickSort(arr, 0, arr.length - 1);
+    }
+
+    private static void _quickSort(int[] arr, int l, int r) {
+        if (l >= r) {
+            return;
+        }
+        int index = partition(arr, l, r);
+        _quickSort(arr, l, index - 1);
+        _quickSort(arr, index + 1, r);
+    }
+
+    private static int partition(int[] arr, int l, int r) {
+        int pivot = arr[l];
+        int i = l + 1, j = r;
+        while (true) {
+            while (i <= r && arr[i] <= pivot) {
+                i++;
+            }
+            while (j > l && arr[j] >= pivot) {
+                j--;
+            }
+            if (j < i) {
+                //所有数据都走完了
+                break;
+            }
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+            i++;
+            j--;
+        }
+        arr[l] = arr[j];
+        arr[j] = pivot;
+        return j;
+    }
+
+
     public static void main(String[] args) {
-        int[] arr = {6,5,4,3,2,1};
-        mergeSort(arr);
+        int[] arr = {6, 5, 4, 3, 2, 1};
+        quickSort(arr);
         System.out.println(Arrays.toString(arr));
     }
 }
