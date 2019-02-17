@@ -1,6 +1,9 @@
 package sort.nlogn;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class Main {
 
@@ -122,10 +125,63 @@ public class Main {
         }
     }
 
+    static class Node implements Comparable<Node> {
+        int val;
+        int listIndex;
+        int index;
+
+        public Node(int val, int listIndex, int index) {
+            this.val = val;
+            this.listIndex = listIndex;
+            this.index = index;
+        }
+
+        public int compareTo(Node o) {
+            return this.val - o.val;
+        }
+    }
+
+    public static List<Integer> mergeList(List<Integer>... lists) {
+        if (lists == null || lists.length == 0) {
+            return new ArrayList<Integer>(0);
+        }
+        PriorityQueue<Node> queue = new PriorityQueue<Node>(lists.length);
+        List<List<Integer>> listList = new ArrayList<List<Integer>>();
+        for (List<Integer> list : lists) {
+            if (list == null || list.isEmpty()) {
+                continue;
+            }
+            listList.add(list);
+        }
+        for (int i = 0; i < listList.size(); i++) {
+            queue.add(new Node(listList.get(i).get(0), i, 0));
+        }
+        List<Integer> list = new ArrayList<Integer>();
+        while (!queue.isEmpty()) {
+            Node poll = queue.poll();
+            list.add(poll.val);
+            List<Integer> list1 = listList.get(poll.listIndex);
+            if (list1.size() > poll.index + 1) {
+                queue.add(new Node(list1.get(poll.index + 1), poll.listIndex, poll.index + 1));
+            }
+        }
+        return list;
+    }
+
 
     public static void main(String[] args) {
-        int[] arr = {6, 5, 4, 3, 2, 1};
-        quickSort(arr);
-        System.out.println(findN(arr,1));
+//        int[] arr = {6, 5, 4, 3, 2, 1};
+//        quickSort(arr);
+//        System.out.println(findN(arr, 1));
+
+        ArrayList<Integer> list1 = new ArrayList<Integer>();
+        ArrayList<Integer> list2 = new ArrayList<Integer>();
+        ArrayList<Integer> list3 = new ArrayList<Integer>();
+        for (int i = 0; i < 3; i++) {
+            list1.add(i);
+            list2.add(i);
+            list3.add(i);
+        }
+        System.out.println(mergeList(list1, list2, list3));
     }
 }
