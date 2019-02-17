@@ -48,7 +48,7 @@ public class Main {
         if (l >= r) {
             return;
         }
-        int index = partition(arr, l, r);
+        int index = partitionRev(arr, l, r);
         _quickSort(arr, l, index - 1);
         _quickSort(arr, index + 1, r);
     }
@@ -79,9 +79,53 @@ public class Main {
     }
 
 
+    private static int partitionRev(int[] arr, int l, int r) {
+        int pivot = arr[l];
+        int i = l + 1, j = r;
+        while (true) {
+            while (i <= r && arr[i] >= pivot) {
+                i++;
+            }
+            while (j > l && arr[j] <= pivot) {
+                j--;
+            }
+            if (j < i) {
+                //所有数据都走完了
+                break;
+            }
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+            i++;
+            j--;
+        }
+        arr[l] = arr[j];
+        arr[j] = pivot;
+        return j;
+    }
+
+    public static int findN(int[] arr, int k) {
+        if (arr.length < k) {
+            return -1;
+        }
+        int l = 0, r = arr.length - 1;
+        while (true) {
+            int index = partitionRev(arr, l, r);
+            int temp = index + 1;
+            if (temp == k) {
+                return arr[index];
+            } else if (temp < k) {
+                l = index + 1;
+            } else {
+                l = index - 1;
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
         int[] arr = {6, 5, 4, 3, 2, 1};
         quickSort(arr);
-        System.out.println(Arrays.toString(arr));
+        System.out.println(findN(arr,1));
     }
 }
