@@ -2,6 +2,9 @@ package skiplist;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 跳表
  *
@@ -78,6 +81,8 @@ public class SkipList<V> {
         return null;
     }
 
+
+
     private void linkVert(Node up, Node down) {
         up.down = down;
         down.up = up;
@@ -90,7 +95,6 @@ public class SkipList<V> {
         preNode.right = newNode;
         newNode.left = preNode;
     }
-
 
     private Node findPreNode(int key) {
         Node curr = head;
@@ -109,20 +113,78 @@ public class SkipList<V> {
         return curr;
     }
 
+    private List<V> tail(int k1, int k2) {
+        Node preNode = findPreNode(k1);
+        List<V> list = new ArrayList<V>();
+        while (preNode != tail) {
+            if (preNode.key >= k1 && preNode.key <= k2) {
+                list.add(preNode.val);
+            }
+            if (preNode.key > k2) {
+                break;
+            }
+            preNode = preNode.right;
+        }
+        return list;
+    }
+
+
     private void linkHori(Node l, Node r) {
         l.right = r;
         r.left = l;
     }
 
+    private V remove(int key) {
+        Node preNode = findPreNode(key);
+        if (preNode.key == key) {
+            removeNode(preNode);
+            V val = preNode.val;
+            return val;
+        }
+        return null;
+    }
+
+    private void removeNode(Node node) {
+        while (node != null) {
+            Node up = node.up;
+            delinkHori(node);
+            delinkVert(node);
+            node = up;
+        }
+    }
+
+    /**
+     * 因为整列都要删除 所以不用连接上下
+     *
+     * @param node
+     */
+    private void delinkVert(Node node) {
+        node.up = node.down = null;
+    }
+
+    private void delinkHori(Node node) {
+        Node left = node.left;
+        Node right = node.right;
+        if (left != null) {
+            left.right = right;
+        }
+        if (right != null) {
+            right.left = left;
+        }
+        node.left = node.right = null;
+    }
+
+
     public static void main(String[] args) {
         SkipList<String> list = new SkipList<String>();
-        list.put(3, "a");
+        list.put(3, "c");
         list.put(2, "b");
-        list.put(1, "c");
+        list.put(1, "a");
 
-        System.out.println(list.get(1));
-        System.out.println(list.get(2));
-        System.out.println(list.get(3));
+//        System.out.println(list.get(1));
+//        System.out.println(list.get(2));
+//        System.out.println(list.get(3));
+        System.out.println(list.tail(2, 3));
     }
 
 
