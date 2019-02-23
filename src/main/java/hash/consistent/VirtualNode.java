@@ -40,8 +40,7 @@ public class VirtualNode<V> {
             System.out.println(name + "->" + other.name + "传输数据:" + entry.toString());
             other.storageServer.put(entry.getKey(), entry.getValue());
         }
-        StorageServer<V> storageServer = other.storageServer;
-        for (Map.Entry<Integer, V> entry : storageServer.entrySet()) {
+        for (Map.Entry<Integer, V> entry : other.storageServer.entrySet()) {
             storageServer.remove(entry.getKey());
             System.out.println(name + "移除数据" + entry.toString());
         }

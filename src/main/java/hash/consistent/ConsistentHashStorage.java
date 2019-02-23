@@ -141,8 +141,22 @@ public class ConsistentHashStorage<K, V> {
     public static void main(String[] args) {
         ConsistentHashStorage<String, String> storage = new ConsistentHashStorage<String, String>();
         StorageServer<String> server1 = new StorageServer<String>("192.168.0.1");
+        StorageServer<String> server2 = new StorageServer<String>("192.168.0.2");
         storage.addNode(server1);
-        storage.removeNode(server1);
+//        storage.removeNode(server1);
+
+
+        for (int i = 0; i < 10000; i++) {
+            storage.put(i+"_key",i+"_val");
+        }
+
+//        for (int i = 0; i < 10000; i++) {
+//            System.err.println(storage.get(i+"_key"));
+//        }
+
+        storage.addNode(server2);
+
+
     }
 
 
