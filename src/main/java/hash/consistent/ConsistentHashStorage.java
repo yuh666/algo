@@ -83,7 +83,7 @@ public class ConsistentHashStorage<K, V> {
             virtualNode = circle.get(circle.firstKey());
         }
         System.out.println(s + "被路由到节点" + virtualNode.getName());
-        return virtualNode.put(hash,v);
+        return virtualNode.put(hash, v);
     }
 
     public V get(K key) {
@@ -146,16 +146,15 @@ public class ConsistentHashStorage<K, V> {
 //        storage.removeNode(server1);
 
 
-        for (int i = 0; i < 10000; i++) {
-            storage.put(i+"_key",i+"_val");
+        for (int i = 0; i < 10; i++) {
+            storage.put(i + "_key", i + "_val");
         }
-
-//        for (int i = 0; i < 10000; i++) {
-//            System.err.println(storage.get(i+"_key"));
-//        }
 
         storage.addNode(server2);
 
+        for (int i = 0; i < 10; i++) {
+            System.err.println(storage.get(i + "_key"));
+        }
 
     }
 
