@@ -34,7 +34,7 @@ public class VirtualNode<V> {
             return;
         }
         for (Map.Entry<Integer, V> entry : storageServer.entrySet()) {
-            if (entry.getKey() >= other.hash) {
+            if (entry.getKey() > other.hash) {
                 break;
             }
             System.out.println(name + "->" + other.name + "传输数据:" + entry.toString());
@@ -46,5 +46,18 @@ public class VirtualNode<V> {
             System.out.println(name + "移除数据" + entry.toString());
         }
     }
+
+    public V put(int key, V val) {
+        return storageServer.put(key, val);
+    }
+
+    public V get(int key) {
+        return storageServer.get(key);
+    }
+
+    public V remove(int key) {
+        return storageServer.remove(key);
+    }
+
 
 }
