@@ -113,6 +113,31 @@ public class BinaryTree<K extends Comparable<K>, V> {
         System.out.println(node.val);
     }
 
+    public void removeMin() {
+        root = _removeMin(root);
+    }
+
+    private Node _removeMin(Node node) {
+        if (node.left == null) {
+            return node.right;
+        }
+        node.left = _removeMax(node.left);
+        return node;
+    }
+
+
+    public void removeMax() {
+        root = _removeMax(root);
+    }
+
+    private Node _removeMax(Node node) {
+        if (node.right == null) {
+            return node.left;
+        }
+        node.right = _removeMax(node.right);
+        return node;
+    }
+
 
     public static void main(String[] args) {
         BinaryTree<String, String> tree = new BinaryTree<String, String>();
