@@ -1,5 +1,7 @@
 package tree;
 
+import java.util.LinkedList;
+
 public class BinaryTree<K extends Comparable<K>, V> {
 
     class Node {
@@ -50,26 +52,34 @@ public class BinaryTree<K extends Comparable<K>, V> {
     }
 
     public V max() {
-        return _max(root);
+        Node node = _max(root);
+        if (node == null) {
+            return null;
+        }
+        return node.val;
     }
 
-    private V _max(Node node) {
+    private Node _max(Node node) {
         if (node.right == null) {
-            return node.val;
+            return node;
         }
         return _max(node.right);
     }
 
 
     public V min() {
-        return _min(root);
+        Node node = _min(root);
+        if (node == null) {
+            return null;
+        }
+        return node.val;
     }
 
-    private V _min(Node node) {
+    private Node _min(Node node) {
         if (node.left == null) {
-            return node.val;
+            return node;
         }
-        return _max(node.left);
+        return _min(node.left);
     }
 
     public void inOrder() {
@@ -139,6 +149,48 @@ public class BinaryTree<K extends Comparable<K>, V> {
     }
 
 
+    public void bfs() {
+        LinkedList<Node> nodes = new LinkedList<Node>();
+        nodes.addLast(root);
+        while (!nodes.isEmpty()) {
+            Node node = nodes.removeFirst();
+            System.out.println(node.val);
+            if (node.left != null) {
+                nodes.add(node.left);
+            }
+            if (node.right != null) {
+                nodes.add(node.right);
+            }
+        }
+    }
+
+    public void remove(K key) {
+        root = _remove(root, key);
+    }
+
+    private Node _remove(Node node, K key) {
+        if (key.compareTo(node.key) < 0) {
+            node.left = _remove(node.left, key);
+        } else if (key.compareTo(node.key) > 0) {
+            node.right = _remove(node.right, key);
+        } else {
+            if (node.right == null) {
+                return node.left;
+            } else if (node.left == null) {
+                return node.right;
+            } else {
+                Node rightMinNode = _min(node.right);
+                node.right = _removeMin(node.right);
+                rightMinNode.left = node.left;
+                rightMinNode.right = node.right;
+                node.left = node.right = null;
+                return rightMinNode;
+            }
+        }
+        return node;
+    }
+
+
     public static void main(String[] args) {
         BinaryTree<String, String> tree = new BinaryTree<String, String>();
         for (int i = 0; i < 5; i++) {
@@ -150,5 +202,14 @@ public class BinaryTree<K extends Comparable<K>, V> {
 //        System.out.println("max:" + tree.max());
 //        System.out.println("min:" + tree.min());
 //        tree.postOrder();
+
+//        tree.removeMax();
+//        tree.removeMin();
+//        System.out.println(tree.max());
+//        System.out.println(tree.min());
+//        tree.bfs();
+        tree.remove("1");
+        tree.remove("3");
+        tree.bfs();
     }
 }
