@@ -79,7 +79,7 @@ public class RBTree<K extends Comparable<K>, V> {
         node.left = leftRight;
         left.color = node.color;
         node.color = RED;
-        return node;
+        return left;
     }
 
     private Node rotateLeft(Node node) {
@@ -89,7 +89,7 @@ public class RBTree<K extends Comparable<K>, V> {
         node.right = rightLeft;
         right.color = node.color;
         node.color = RED;
-        return node;
+        return right;
     }
 
     private boolean isRed(Node node) {
@@ -204,7 +204,7 @@ public class RBTree<K extends Comparable<K>, V> {
     public static void main(String[] args) {
         RBTree<String, String> tree = new RBTree<String, String>();
         for (int i = 0; i < 5; i++) {
-            tree.put(i + "", i + "");
+            tree.put(i +1+ "", i +1+ "");
         }
 //        for (int i = 0; i < 5; i++) {
 //            System.out.println(tree.get(i + ""));
