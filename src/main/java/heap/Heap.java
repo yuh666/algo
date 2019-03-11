@@ -19,7 +19,7 @@ public class Heap<T extends Comparable<T>> {
     private void shiftDown(int index, int limit) {
         while (2 * index + 1 < limit) {
             int k = 2 * index + 1;
-            if (k + 1 < limit && data[k].compareTo(data[k + 1]) < 0) {
+            if (k + 1 < limit && data[k].compareTo(data[k + 1]) > 0) {
                 k++;
             }
             if (data[k].compareTo(data[index]) > 0) {

@@ -58,7 +58,7 @@ public class IndexHeap<T extends Comparable<T>> {
     private void shiftDown(int index, int limit) {
         while (2 * index + 1 < limit) {
             int k = 2 * index + 1;
-            if (k + 1 < limit && data[indexes[k]].compareTo(data[indexes[k + 1]]) < 0) {
+            if (k + 1 < limit && data[indexes[k]].compareTo(data[indexes[k + 1]]) > 0) {
                 k++;
             }
             if (data[indexes[k]].compareTo(data[indexes[index]]) > 0) {
@@ -91,6 +91,22 @@ public class IndexHeap<T extends Comparable<T>> {
 
     public boolean isEmpty() {
         return size == 0;
+    }
+
+
+    public static void main(String[] args) {
+        IndexHeap<Integer> indexHeap = new IndexHeap<Integer>(10);
+        indexHeap.add(1,1);
+        indexHeap.add(3,3);
+        indexHeap.add(2,2);
+
+        indexHeap.change(1,5);
+
+
+
+        System.out.println(indexHeap.remove());
+        System.out.println(indexHeap.remove());
+        System.out.println(indexHeap.remove());
     }
 
 }
