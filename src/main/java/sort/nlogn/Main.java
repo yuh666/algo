@@ -169,19 +169,54 @@ public class Main {
     }
 
 
+    public static void heapSort(int[] arr) {
+        //构建一个大顶堆
+        int length = arr.length;
+        for (int i = length / 2; i >= 0; i--) {
+            shiftDown(arr, i, length);
+        }
+        //逐个取出放到最后
+        for (int i = arr.length - 1; i > 0; i--) {
+            swap(arr, i, 0);
+            shiftDown(arr, 0, i);
+        }
+    }
+
+    private static void shiftDown(int[] arr, int index, int limit) {
+        while (2 * index + 1 < limit) {
+            int k = 2 * index + 1;
+            if (k + 1 < limit && arr[k] < arr[k + 1]) {
+                k++;
+            }
+            if (arr[k] <= arr[index]) {
+                break;
+            }
+            swap(arr, index, k);
+            index = k;
+        }
+    }
+
+    private static void swap(int[] arr, int i1, int i2) {
+        int temp = arr[i1];
+        arr[i1] = arr[i2];
+        arr[i2] = temp;
+    }
+
+
     public static void main(String[] args) {
-//        int[] arr = {6, 5, 4, 3, 2, 1};
-//        quickSort(arr);
+        int[] arr = {6, 5, 6, 3, 2, 1};
+        heapSort(arr);
+        System.out.println(Arrays.toString(arr));
 //        System.out.println(findN(arr, 1));
 
-        ArrayList<Integer> list1 = new ArrayList<Integer>();
-        ArrayList<Integer> list2 = new ArrayList<Integer>();
-        ArrayList<Integer> list3 = new ArrayList<Integer>();
-        for (int i = 0; i < 3; i++) {
-            list1.add(i);
-            list2.add(i);
-            list3.add(i);
-        }
-        System.out.println(mergeList(list1, list2, list3));
+//        ArrayList<Integer> list1 = new ArrayList<Integer>();
+//        ArrayList<Integer> list2 = new ArrayList<Integer>();
+//        ArrayList<Integer> list3 = new ArrayList<Integer>();
+//        for (int i = 0; i < 3; i++) {
+//            list1.add(i);
+//            list2.add(i);
+//            list3.add(i);
+//        }
+//        System.out.println(mergeList(list1, list2, list3));
     }
 }
