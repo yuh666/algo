@@ -1,6 +1,5 @@
 package tree;
 
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.LinkedList;
 
