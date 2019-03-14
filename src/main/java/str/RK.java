@@ -6,14 +6,31 @@ import java.util.Arrays;
  * @author yuh
  * @date 2019-03-14 09:49
  **/
-public class BF {
+public class RK {
 
 
     public static int indexOf(String mainStr, String pStr) {
+        int[] base = new int[pStr.length()];
+        for (int i = 0; i < base.length; i++) {
+            base[i] = (int) Math.pow(26, base.length - i - 1);
+        }
+
+
         int n = mainStr.length();
         int m = pStr.length();
 
+        int mHash = hash(pStr, 0, m - 1, base);
+        int nHash = 0;
+
         for (int i = 0; i <= n - m; i++) {
+            if (i == 0) {
+                nHash = hash(mainStr, 0, m - 1, base);
+            } else {
+                nHash = (nHash - mainStr.charAt(i - 1) * base[0]) * 26 + mainStr.charAt(i + m - 1);
+            }
+            if (mHash != nHash) {
+                continue;
+            }
             int j;
             for (j = 0; j < m; j++) {
                 if (mainStr.charAt(i + j) != pStr.charAt(j)) {
@@ -27,7 +44,6 @@ public class BF {
         return -1;
     }
 
-
     public static int[] indexOf(char[][] main, char[][] p) {
 
 
@@ -37,6 +53,7 @@ public class BF {
         int m1 = p.length;
         int m2 = p[0].length;
 
+
         StringBuilder pSB = new StringBuilder();
 
         for (int i = 0; i < p.length; i++) {
@@ -44,6 +61,13 @@ public class BF {
                 pSB.append(p[i][j]);
             }
         }
+
+        int[] base = new int[pSB.length()];
+        for (int i = 0; i < base.length; i++) {
+            base[i] = (int) Math.pow(26, base.length - i - 1);
+        }
+
+        int pHash = hash(pSB.toString(), 0, pSB.length() - 1, base);
 
         StringBuilder mainSB = new StringBuilder();
 
@@ -54,6 +78,9 @@ public class BF {
                     for (int u = j; u < j + m2; u++) {
                         mainSB.append(main[k][u]);
                     }
+                }
+                if (hash(mainSB.toString(), 0, mainSB.length() - 1, base) != pHash) {
+                    continue;
                 }
                 int k;
                 for (k = 0; k < mainSB.length(); k++) {
@@ -69,12 +96,17 @@ public class BF {
         return new int[]{-1, -1};
     }
 
-
-
+    private static int hash(String str, int i, int j, int[] base) {
+        int sum = 0;
+        for (int k = i; k <= j; k++) {
+            sum += str.charAt(k) * base[k - i];
+        }
+        return sum;
+    }
 
     public static void main(String[] args) {
 //        String n = "abcd";
-//        String m = "bc";
+//        String m = "ccd";
 //
 //        System.out.println(
 //                indexOf(n, m)
@@ -91,6 +123,5 @@ public class BF {
                 {'d','c'}};
 
         System.out.println(Arrays.toString(indexOf(nn,mm)));
-
     }
 }
