@@ -11,6 +11,23 @@ import org.nlpcn.commons.lang.util.MurmurHash;
 import java.io.*;
 import java.util.*;
 
+/**
+ * ##########初始化过程##########
+ *
+ *                     分词（去掉停止词）               逐词hash
+ * 如果可以,别下完这场雨      --->         可以 雨       --->   可以(00001110101010) 雨(0001010101010)
+ *
+ * 每个词hash分散到64位上并累加(1 -> +1 , 0 -> -1)        降维得到最终hash(由多个维度降低为两个维度 即0,1 >0 -> 1 <0 -> -1)
+ *        --->      [-1,1,2,......,-1]                 --->    011010101010100101
+ *
+ * bloomFilter过滤(保证相同的能在O(1)搞定)                hash拆成4段（每16位一段） 并反向索引
+ *      --->          bloomFilter.insert(hash)        ---> {10101010101010 ->[hash1,..hashn],...}
+ *
+ * ############查找过程###########
+ *
+ *  hash(与上面一致) -> bloomFilter.mightContain(hash) || hash拆成四段去取的每段对应的列表 遍历计算Hamming距离 < 10 认为是相似
+ *
+ */
 public class Main {
 
     //single thread, avoid GC
