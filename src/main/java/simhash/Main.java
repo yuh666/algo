@@ -29,7 +29,36 @@ public class Main {
         System.out.println("文件共有" + lineNumber + "行");
         simhashReverseMap = new HashMap<>(lineNumber);
         bloomFilter = BloomFilter.create(Funnels.longFunnel(), lineNumber);
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(absolutePath));
+        int count = initBloomFilterAndReverseMap(absolutePath);
+        System.out.println("构造不重复simhash数目:" + count + "个,耗时:" + (System.currentTimeMillis() - l) + "ms");
+    }
+
+    public boolean mayContains(String doc) {
+        long simhash = simhash(doc);
+        if (bloomFilter.mightContain(simhash)) {
+            return true;
+        }
+        for (int i = 0; i < 8; i++) {
+            long quaterHash = simhash >> i * 8 & 0xff;
+            Set<Long> set = simhashReverseMap.get(quaterHash);
+            if (set == null) {
+                continue;
+            }
+            for (Long hash : set) {
+                if (hammingDistance(hash, simhash) < 10) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int hammingDistance(long hash1, long hash2) {
+        return Long.bitCount(hash1 ^ hash2);
+    }
+
+    private int initBloomFilterAndReverseMap(String docPath) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(docPath));
         String line;
         int count = 0;
         while ((line = bufferedReader.readLine()) != null) {
@@ -50,7 +79,7 @@ public class Main {
             }
         }
         bufferedReader.close();
-        System.out.println("构造不重复simhash数目:" + count + "个,耗时:" + (System.currentTimeMillis() - l) + "ms");
+        return count;
     }
 
     private void initStopWrods(String path) throws IOException {
@@ -70,7 +99,7 @@ public class Main {
     }
 
 
-    public long simhash(String doc) {
+    private long simhash(String doc) {
         Arrays.fill(bits, 0);
         Result result = ToAnalysis.parse(doc).recognition(s);
         List<Term> terms = result.getTerms();
@@ -97,26 +126,6 @@ public class Main {
         return hash;
     }
 
-
-    public boolean mayContains(String doc) {
-        long simhash = simhash(doc);
-        if (bloomFilter.mightContain(simhash)) {
-            return true;
-        }
-        for (int i = 0; i < 8; i++) {
-            long quaterHash = simhash >> i * 8 & 0xff;
-            Set<Long> set = simhashReverseMap.get(quaterHash);
-            if (set == null) {
-                continue;
-            }
-            for (Long hash : set) {
-                if (Long.bitCount(simhash ^ hash) < 10) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public static void main(String[] args) throws IOException {
         Main main = new Main();
