@@ -1,18 +1,14 @@
 package simhash;
 
 import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnel;
 import com.google.common.hash.Funnels;
-import com.google.common.hash.PrimitiveSink;
 import org.ansj.domain.Result;
 import org.ansj.domain.Term;
-import org.ansj.recognition.Recognition;
 import org.ansj.recognition.impl.StopRecognition;
 import org.ansj.splitWord.analysis.ToAnalysis;
 import org.nlpcn.commons.lang.util.MurmurHash;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public class Main {
@@ -28,24 +24,15 @@ public class Main {
 
     public void init(String absolutePath, String stopWordPath) throws IOException {
         long l = System.currentTimeMillis();
-        s = new StopRecognition();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(stopWordPath));
-        String sw;
-        while ((sw = bufferedReader.readLine()) != null) {
-            s.insertStopWords(sw);
-        }
-        FileReader fileReader = new FileReader(absolutePath);
-        LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
-        lineNumberReader.skip(Long.MAX_VALUE);
-        System.out.println("文件共有" + lineNumberReader.getLineNumber() + "行");
-        simhashReverseMap = new HashMap<>(lineNumberReader.getLineNumber());
-        bloomFilter = BloomFilter.create(Funnels.longFunnel(), lineNumberReader.getLineNumber());
-        lineNumberReader.close();
-        fileReader.close();
-        lineNumberReader = new LineNumberReader(new FileReader(absolutePath));
+        initStopWrods(stopWordPath);
+        int lineNumber = getLineNumber(absolutePath);
+        System.out.println("文件共有" + lineNumber + "行");
+        simhashReverseMap = new HashMap<>(lineNumber);
+        bloomFilter = BloomFilter.create(Funnels.longFunnel(), lineNumber);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(absolutePath));
         String line;
         int count = 0;
-        while ((line = lineNumberReader.readLine()) != null) {
+        while ((line = bufferedReader.readLine()) != null) {
             long simhash = simhash(line);
             if (bloomFilter.mightContain(simhash)) {
                 continue;
@@ -62,9 +49,24 @@ public class Main {
                 set.add(simhash);
             }
         }
-        lineNumberReader.close();
-        fileReader.close();
+        bufferedReader.close();
         System.out.println("构造不重复simhash数目:" + count + "个,耗时:" + (System.currentTimeMillis() - l) + "ms");
+    }
+
+    private void initStopWrods(String path) throws IOException {
+        s = new StopRecognition();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+        String sw;
+        while ((sw = bufferedReader.readLine()) != null) {
+            s.insertStopWords(sw);
+        }
+    }
+
+    private int getLineNumber(String path) throws IOException {
+        LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(path));
+        lineNumberReader.skip(Long.MAX_VALUE);
+        lineNumberReader.close();
+        return lineNumberReader.getLineNumber();
     }
 
 
