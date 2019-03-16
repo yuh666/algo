@@ -15,13 +15,13 @@ import java.util.*;
 public class Main {
 
     //single thread, avoid GC
-    private static final int[] bits = new int[64];
+    private final int[] bits = new int[64];
     //simhash reverse index
-    private static Map<Long, Set<Long>> simhashReverseMap;
+    private Map<Long, Set<Long>> simhashReverseMap;
     //bloomFilter
-    private static BloomFilter<String> bloomFilter;
+    private BloomFilter<String> bloomFilter;
 
-    public static void init(String absolutePath) throws IOException {
+    public void init(String absolutePath) throws IOException {
         long l = System.currentTimeMillis();
         FileReader fileReader = new FileReader(absolutePath);
         LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
@@ -47,7 +47,7 @@ public class Main {
             bloomFilter.put(line);
             long simhash = simhash(line);
             for (int i = 0; i < 4; i++) {
-                long quaterHash = simhash >> i * 16;
+                long quaterHash = simhash >> i * 16 & 0xffff;
                 Set<Long> set = simhashReverseMap.get(quaterHash);
                 if (set == null) {
                     set = new HashSet<>();
@@ -62,7 +62,7 @@ public class Main {
     }
 
 
-    public static long simhash(String doc) {
+    public long simhash(String doc) {
         Arrays.fill(bits, 0);
         Result result = ToAnalysis.parse(doc);
         List<Term> terms = result.getTerms();
@@ -90,13 +90,13 @@ public class Main {
     }
 
 
-    public static boolean mayContains(String doc) {
+    public boolean mayContains(String doc) {
         long simhash = simhash(doc);
         if (bloomFilter.mightContain(doc)) {
             return true;
         }
         for (int i = 0; i < 4; i++) {
-            long quaterHash = simhash >> i * 16;
+            long quaterHash = simhash >> i * 16 & 0xffff;
             Set<Long> set = simhashReverseMap.get(quaterHash);
             if (set == null) {
                 continue;
@@ -111,7 +111,9 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\log.txt");
+        Main main = new Main();
+        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\log.txt");
+        System.out.println(main.mayContains("我们都有一个家名字叫中国啊"));
     }
 
 }
