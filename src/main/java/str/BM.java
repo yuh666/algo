@@ -71,11 +71,12 @@ public class BM {
         for (int i = 0; i < pStr.length(); i++) {
             map.put(pStr.charAt(i), i);
         }
+
         return map;
     }
 
     public static void main(String[] args) {
-        String mainStr = "abababababababababc";
+        String mainStr = "ababababababababa  bc";
         String pStr = "abc";
 //        int[] su = new int[pStr.length()];
 //        boolean[] pre = new boolean[pStr.length()];
