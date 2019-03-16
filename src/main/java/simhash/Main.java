@@ -129,16 +129,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main main = new Main();
-        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\log.txt",
+        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\rain.txt",
                 "C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\stopwords.dic");
-//        for (int i = 0; i < 100000; i++) {
-//            long l = System.nanoTime();
-//            boolean b = main.mayContains("我们都有一个家名字叫美国,");
-//            //compare between interprete and JIT
-//            if (i < 10 || i > 99990) {
-//                System.out.println(b+","+(System.nanoTime() - l));
-//            }
-//        }
+        boolean b = main.mayContains("如果可以,别下完这场雨");
+        System.out.println(b);
     }
 
 }
