@@ -2,9 +2,12 @@ package simhash;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;
+import com.google.common.hash.Funnels;
 import com.google.common.hash.PrimitiveSink;
 import org.ansj.domain.Result;
 import org.ansj.domain.Term;
+import org.ansj.recognition.Recognition;
+import org.ansj.recognition.impl.StopRecognition;
 import org.ansj.splitWord.analysis.ToAnalysis;
 import org.nlpcn.commons.lang.util.MurmurHash;
 
@@ -19,35 +22,38 @@ public class Main {
     //simhash reverse index
     private Map<Long, Set<Long>> simhashReverseMap;
     //bloomFilter
-    private BloomFilter<String> bloomFilter;
+    private BloomFilter<Long> bloomFilter;
+    //stopWord
+    private StopRecognition s;
 
-    public void init(String absolutePath) throws IOException {
+    public void init(String absolutePath, String stopWordPath) throws IOException {
         long l = System.currentTimeMillis();
+        s = new StopRecognition();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(stopWordPath));
+        String sw;
+        while ((sw = bufferedReader.readLine()) != null) {
+            s.insertStopWords(sw);
+        }
         FileReader fileReader = new FileReader(absolutePath);
         LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
         lineNumberReader.skip(Long.MAX_VALUE);
         System.out.println("文件共有" + lineNumberReader.getLineNumber() + "行");
         simhashReverseMap = new HashMap<>(lineNumberReader.getLineNumber());
-        bloomFilter = BloomFilter.create(new Funnel<String>() {
-            @Override
-            public void funnel(String s, PrimitiveSink primitiveSink) {
-                primitiveSink.putString(s, Charset.forName("UTF-8"));
-            }
-        }, lineNumberReader.getLineNumber());
+        bloomFilter = BloomFilter.create(Funnels.longFunnel(), lineNumberReader.getLineNumber());
         lineNumberReader.close();
         fileReader.close();
         lineNumberReader = new LineNumberReader(new FileReader(absolutePath));
         String line;
         int count = 0;
         while ((line = lineNumberReader.readLine()) != null) {
-            if (bloomFilter.mightContain(line)) {
+            long simhash = simhash(line);
+            if (bloomFilter.mightContain(simhash)) {
                 continue;
             }
             count++;
-            bloomFilter.put(line);
-            long simhash = simhash(line);
-            for (int i = 0; i < 4; i++) {
-                long quaterHash = simhash >> i * 16 & 0xffff;
+            bloomFilter.put(simhash);
+            for (int i = 0; i < 8; i++) {
+                long quaterHash = simhash >> i * 8 & 0xff;
                 Set<Long> set = simhashReverseMap.get(quaterHash);
                 if (set == null) {
                     set = new HashSet<>();
@@ -64,7 +70,7 @@ public class Main {
 
     public long simhash(String doc) {
         Arrays.fill(bits, 0);
-        Result result = ToAnalysis.parse(doc);
+        Result result = ToAnalysis.parse(doc).recognition(s);
         List<Term> terms = result.getTerms();
         for (Term term : terms) {
             String realName = term.getRealName();
@@ -92,11 +98,11 @@ public class Main {
 
     public boolean mayContains(String doc) {
         long simhash = simhash(doc);
-        if (bloomFilter.mightContain(doc)) {
+        if (bloomFilter.mightContain(simhash)) {
             return true;
         }
-        for (int i = 0; i < 4; i++) {
-            long quaterHash = simhash >> i * 16 & 0xffff;
+        for (int i = 0; i < 8; i++) {
+            long quaterHash = simhash >> i * 8 & 0xff;
             Set<Long> set = simhashReverseMap.get(quaterHash);
             if (set == null) {
                 continue;
@@ -112,8 +118,16 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main main = new Main();
-        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\log.txt");
-        System.out.println(main.mayContains("我们都有一个家名字叫中国啊"));
+        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\log.txt",
+                "C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\stopwords.dic");
+//        for (int i = 0; i < 100000; i++) {
+//            long l = System.nanoTime();
+//            boolean b = main.mayContains("我们都有一个家名字叫美国,");
+//            //compare between interprete and JIT
+//            if (i < 10 || i > 99990) {
+//                System.out.println(b+","+(System.nanoTime() - l));
+//            }
+//        }
     }
 
 }
