@@ -55,8 +55,8 @@ public class Main {
         if (bloomFilter.mightContain(simhash)) {
             return true;
         }
-        for (int i = 0; i < 8; i++) {
-            long quaterHash = simhash >> i * 8 & 0xff;
+        for (int i = 0; i < 4; i++) {
+            long quaterHash = simhash >> i * 16 & 0xffff;
             Set<Long> set = simhashReverseMap.get(quaterHash);
             if (set == null) {
                 continue;
@@ -85,8 +85,8 @@ public class Main {
             }
             count++;
             bloomFilter.put(simhash);
-            for (int i = 0; i < 8; i++) {
-                long quaterHash = simhash >> i * 8 & 0xff;
+            for (int i = 0; i < 4; i++) {
+                long quaterHash = simhash >> i * 16 & 0xffff;
                 Set<Long> set = simhashReverseMap.get(quaterHash);
                 if (set == null) {
                     set = new HashSet<>();
@@ -120,6 +120,7 @@ public class Main {
         Arrays.fill(bits, 0);
         Result result = ToAnalysis.parse(doc).recognition(s);
         List<Term> terms = result.getTerms();
+        System.out.println(terms);
         for (Term term : terms) {
             String realName = term.getRealName();
             long hash = MurmurHash.hash64(realName);
@@ -146,10 +147,15 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main main = new Main();
-        main.init("C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\rain.txt",
-                "C:\\Users\\yuh\\IdeaProjects\\algo\\src\\main\\java\\simhash\\stopwords.dic");
-        boolean b = main.mayContains("如果可以,别下完这场雨");
-        System.out.println(b);
+        main.init("/Users/yuh/develop/daojia_projects/algo/src/main/java/simhash/rain.txt",
+                "/Users/yuh/develop/daojia_projects/algo/src/main/java/simhash/stopwords.dic");
+        String str = "属于90后的玩游戏黄金年纪已经慢慢逝去，想必各大90玩家们都开始踏进工作和社会上的浮躁，甚至有的已经成家立业了，" +
+                "如今在快节奏娱乐方式和年纪和当年的自己格格不入，碎片化的时间对游戏的热爱痴迷程度往往不如当年，" +
+                "作为一名游戏玩家希望把自己在当年所玩过的游戏仅存的一些记忆在这里分享给大家，可能每个人所玩过的游戏不一样，" +
+                "我只是把我自己在当年所玩过的在这里做分我知道享，希望不被历史所埋没这些启蒙经典单机游戏。";
+
+
+        System.out.println(main.mayContains(str));
     }
 
 }
