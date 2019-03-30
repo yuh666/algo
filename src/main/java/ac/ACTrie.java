@@ -11,9 +11,9 @@ public class ACTrie {
 
     private class Result {
         String after;
-        List<String> sensitiveWords;
+        Set<String> sensitiveWords;
 
-        public Result(String after, List<String> sensitiveWords) {
+        public Result(String after, Set<String> sensitiveWords) {
             this.after = after;
             this.sensitiveWords = sensitiveWords;
         }
@@ -104,21 +104,22 @@ public class ACTrie {
     }
 
     public Result matchAll(String word, boolean all) {
-        ArrayList<String> list = new ArrayList<>();
+        Set<String> list = new HashSet<>();
         ArrayList<Integer> index = new ArrayList<>();
+        Set<Integer> inUse = new HashSet<>();
         ArrayList<Integer> stop = new ArrayList<>();
-        _matchAll(word, list, index, stop, all);
+        _matchAll(word, list, index, stop, all,inUse);
         char[] chars = word.toCharArray();
         for (Integer i : stop) {
             chars[i] = '*';
         }
-        for (Integer i : index) {
+        for (Integer i : inUse) {
             chars[i] = '*';
         }
         return new Result(new String(chars), list);
     }
 
-    private void _matchAll(String word, List<String> words, List<Integer> indexes, List<Integer> stop, boolean all) {
+    private void _matchAll(String word, Set<String> words, List<Integer> indexes, List<Integer> stop, boolean all,Set<Integer> inUseIndex) {
         ACNode curr = root;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
@@ -134,7 +135,7 @@ public class ACTrie {
             ACNode temp = curr;
             while (temp != root) {
                 if (temp.isEnd) {
-                    addSWord(indexes, word, words, temp.length);
+                    addSWord(indexes, word, words, temp.length,inUseIndex);
                     if (!all) {
                         break;
                     }
@@ -144,10 +145,12 @@ public class ACTrie {
         }
     }
 
-    private void addSWord(List<Integer> indexes, String word, List<String> words, int length) {
+    private void addSWord(List<Integer> indexes, String word, Set<String> words, int length, Set<Integer> inUseIndex) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = indexes.size() - length; i < indexes.size(); i++) {
-            stringBuilder.append(word.charAt(indexes.get(i)));
+            Integer index = indexes.get(i);
+            inUseIndex.add(index);
+            stringBuilder.append(word.charAt(index));
         }
         words.add(stringBuilder.toString());
     }
@@ -159,7 +162,7 @@ public class ACTrie {
         acTrie.add("abd");
         acTrie.add("bd");
         acTrie.init();
-        Result abcbd = acTrie.matchAll("fabcfabdsdf", false);
+        Result abcbd = acTrie.matchAll("facfabdsdf", false);
         System.out.println(abcbd);
     }
 
