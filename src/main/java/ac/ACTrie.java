@@ -122,7 +122,7 @@ public class ACTrie {
         ACNode curr = root;
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            while (curr != root && curr.get(c) != null) {
+            while (curr.get(c) == null && curr != root) {
                 curr = curr.fail;
             }
             curr = curr.get(c);
@@ -146,8 +146,8 @@ public class ACTrie {
 
     private void addSWord(List<Integer> indexes, String word, List<String> words, int length) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = indexes.size() - 1 - length; i < indexes.size(); i++) {
-            stringBuilder.append(word.charAt(i));
+        for (int i = indexes.size() - length; i < indexes.size(); i++) {
+            stringBuilder.append(word.charAt(indexes.get(i)));
         }
         words.add(stringBuilder.toString());
     }
@@ -159,7 +159,7 @@ public class ACTrie {
         acTrie.add("abd");
         acTrie.add("bd");
         acTrie.init();
-        Result abcbd = acTrie.matchAll("fafasdf", true);
+        Result abcbd = acTrie.matchAll("fabcfabdsdf", false);
         System.out.println(abcbd);
     }
 
