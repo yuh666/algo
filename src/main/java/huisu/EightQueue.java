@@ -2,6 +2,10 @@ package huisu;
 
 import java.util.Arrays;
 
+/**
+ *
+ * 回溯算法就是选择一条路走下去 走不下去就回到路口选择其他路走下去 能走下去就取消其他路口的选择
+ */
 public class EightQueue {
 
     private static int[] result = new int[8];
