@@ -145,6 +145,10 @@ public class ACTrie {
         }
     }
 
+    public void addStopWord(String stopWord){
+
+    }
+
     private void addSWord(List<Integer> indexes, String word, Set<String> words, int length, Set<Integer> inUseIndex) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = indexes.size() - length; i < indexes.size(); i++) {
