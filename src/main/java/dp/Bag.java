@@ -16,7 +16,7 @@ public class Bag {
             //将上面一个item处理完的情况copy下来
             for (int j = 0; j <= w; j++) {
                 if (state[i - 1][j]) {
-                    state[i][j] = true;
+                    state[i][j]  = true;
                 }
             }
             //将第i个item添加到不超过w的地方
