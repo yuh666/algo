@@ -1,4 +1,4 @@
-package dijstra;
+package dijstra1;
 
 public class IndexHeap<T extends Comparable<T>> {
 

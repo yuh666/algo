@@ -1,4 +1,4 @@
-package dijstra;
+package dijstra1;
 
 import java.util.LinkedList;
 
@@ -9,12 +9,12 @@ import java.util.LinkedList;
 public class ShortestPath {
 
 
-    private SparseGraph sparseGraph;
+    private SparseGraph1 sparseGraph1;
     private int v;
 
-    public ShortestPath(SparseGraph sparseGraph) {
-        this.sparseGraph = sparseGraph;
-        this.v = sparseGraph.v();
+    public ShortestPath(SparseGraph1 sparseGraph1) {
+        this.sparseGraph1 = sparseGraph1;
+        this.v = sparseGraph1.v();
     }
 
     //from tid to sid
@@ -32,7 +32,7 @@ public class ShortestPath {
                 return list;
             }
             Integer wt = ws[index];
-            LinkedList<Edge> adj = sparseGraph.adj(index);
+            LinkedList<Edge> adj = sparseGraph1.adj(index);
             for (Edge edge : adj) {
                 int other = edge.other(index);
                 if (tIndexHeap.contains(other)) {
@@ -61,14 +61,14 @@ public class ShortestPath {
     }
 
     public static void main(String[] args) {
-        SparseGraph sparseGraph = new SparseGraph(4);
-        sparseGraph.connect(0, 1, 1);
-        sparseGraph.connect(0, 2, 2);
+        SparseGraph1 sparseGraph1 = new SparseGraph1(4);
+        sparseGraph1.connect(0, 1, 1);
+        sparseGraph1.connect(0, 2, 2);
 
-        sparseGraph.connect(1, 3, 20);
-        sparseGraph.connect(2, 3, 1000);
+        sparseGraph1.connect(1, 3, 20);
+        sparseGraph1.connect(2, 3, 1000);
 
-        ShortestPath shortestPath = new ShortestPath(sparseGraph);
+        ShortestPath shortestPath = new ShortestPath(sparseGraph1);
         LinkedList<Integer> path = shortestPath.path(0, 3);
         System.out.println(path);
     }

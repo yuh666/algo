@@ -1,4 +1,4 @@
-package dijstra;
+package dijstra1;
 
 /**
  * @author yuh

@@ -1,4 +1,4 @@
-package dijstra;
+package dijstra1;
 
 import java.util.LinkedList;
 
@@ -6,13 +6,13 @@ import java.util.LinkedList;
  * @author yuh
  * @date 2019-04-19 10:49
  **/
-public class SparseGraph {
+public class SparseGraph1 {
 
     private LinkedList<Edge>[] matrix;
 
     private int v;
 
-    public SparseGraph(int v) {
+    public SparseGraph1(int v) {
         this.v = v;
         matrix = (LinkedList<Edge>[]) new LinkedList[v];
         for (int i = 0; i < matrix.length; i++) {
